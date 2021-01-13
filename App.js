@@ -2,7 +2,6 @@ import React from "react";
 import {
   Image,
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -13,20 +12,19 @@ import List from "./components/List";
 const App = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View style={styles.header}>
-          <Image
-            style={styles.headerImage}
-            source={{
-              uri:
-                "https://thumbs.dreamstime.com/b/kitty-cat-adoption-white-background-54990090.jpg",
-            }}
-          />
-          <Text style={styles.countText}>3 homeless cats</Text>
-        </View>
-        <List />
-      </ScrollView>
-      <StatusBar />
+      <View style={styles.header}>
+        <Image
+          style={styles.headerImage}
+          source={{
+            uri:
+              "https://thumbs.dreamstime.com/b/kitty-cat-adoption-white-background-54990090.jpg",
+          }}
+        />
+        <Text style={styles.countText}>3 homeless cats</Text>
+      </View>
+      <List />
+
+      <StatusBar backgroundColor="green" />
     </SafeAreaView>
   );
 };
@@ -35,8 +33,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
   },
   header: {
     height: 250,
@@ -47,14 +43,14 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
   },
-
   countText: {
     position: "absolute",
     bottom: 16,
     end: 0,
     backgroundColor: "white",
     padding: 8,
-    paddingEnd: 24,
+    marginEnd: 16,
+    borderRadius: 8,
     borderColor: "#acacac",
     borderWidth: 1,
   },

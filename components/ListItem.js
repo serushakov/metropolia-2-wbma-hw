@@ -25,15 +25,29 @@ ListItem.propTypes = {
 
 const styles = StyleSheet.create({
   listItem: {
-    backgroundColor: "#c0c0c0",
-    marginHorizontal: 16,
+    backgroundColor: "#ffffff",
+    padding: 16,
     borderRadius: 8,
+    marginHorizontal: 16,
     marginBottom: 16,
+
     flexDirection: "row",
-    overflow: "hidden",
+
+    borderWidth: 1,
+    borderColor: "#acacac",
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
   },
   textContent: {
-    padding: 16,
+    paddingStart: 16,
     flexDirection: "column",
     flexShrink: 1,
     width: "60%",
@@ -45,12 +59,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   itemImage: {
-    width: "40%",
+    width: 125,
+    height: 125,
+    borderRadius: 150,
+    alignSelf: "center",
   },
   itemTitle: {
     fontWeight: "bold",
     fontSize: 18,
     marginBottom: 8,
+    color: "orange",
   },
   itemText: {
     flex: 1,
