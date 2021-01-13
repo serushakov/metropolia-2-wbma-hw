@@ -4,7 +4,7 @@ This repository contains solutions to Web Based Mobile Development course in Met
 
 ## Links
 
-## Frontend
+### Frontend
 
 - [Exercise 1](https://github.com/serushakov/metropolia-2-wbma-hw/tree/exercise-1)
 
