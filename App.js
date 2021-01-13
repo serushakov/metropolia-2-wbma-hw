@@ -50,13 +50,15 @@ const App = () => {
         renderItem={({ item }) => {
           return (
             <TouchableOpacity>
-              <Image
-                style={{ width: 100, height: 100 }}
-                source={{ uri: item.thumbnails.w160 }}
-              />
-              <View>
-                <Text>{item.title}</Text>
-                <Text>{item.description}</Text>
+              <View style={styles.listItem}>
+                <Image
+                  style={styles.itemImage}
+                  source={{ uri: item.thumbnails.w160 }}
+                />
+                <View style={styles.textContent}>
+                  <Text style={styles.itemTitle}>{item.title}</Text>
+                  <Text style={styles.description}>{item.description}</Text>
+                </View>
               </View>
             </TouchableOpacity>
           );
@@ -72,6 +74,38 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  listItem: {
+    backgroundColor: "#c0c0c0",
+    marginHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 16,
+    flexDirection: "row",
+    overflow: "hidden",
+  },
+  textContent: {
+    padding: 16,
+    flexDirection: "column",
+    flexShrink: 1,
+    width: "60%",
+  },
+  description: {
+    flexDirection: "column",
+    flexShrink: 1,
+    flexWrap: "wrap",
+    fontSize: 13,
+  },
+  itemImage: {
+    width: "40%",
+  },
+  itemTitle: {
+    fontWeight: "bold",
+    fontSize: 18,
+    marginBottom: 8,
+  },
+  itemText: {
+    flex: 1,
+    flexShrink: 1,
   },
 });
 
