@@ -1,53 +1,97 @@
-import React from "react";
-import { FlatList } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import ListItem from "./ListItem";
 
-const mediaArray = [
-  {
-    key: "0",
-    title: "Title 1",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sodales enim eget leo condimentum vulputate. Sed lacinia consectetur fermentum. Vestibulum lobortis purus id nisi mattis posuere. Praesent sagittis justo quis nibh ullamcorper, eget elementum lorem consectetur. Pellentesque eu consequat justo, eu sodales eros.",
-    thumbnails: {
-      w160: "http://placekitten.com/160/161",
-    },
-    filename: "http://placekitten.com/2048/1920",
-  },
-  {
-    key: "1",
-    title: "Title 2",
-    description:
-      "Donec dignissim tincidunt nisl, non scelerisque massa pharetra ut. Sed vel velit ante. Aenean quis viverra magna. Praesent eget cursus urna. Ut rhoncus interdum dolor non tincidunt. Sed vehicula consequat facilisis. Pellentesque pulvinar sem nisl, ac vestibulum erat rhoncus id. Vestibulum tincidunt sapien eu ipsum tincidunt pulvinar. ",
-    thumbnails: {
-      w160: "http://placekitten.com/160/164",
-    },
-    filename: "http://placekitten.com/2041/1922",
-  },
-  {
-    key: "2",
-    title: "Title 3",
-    description:
-      "Phasellus imperdiet nunc tincidunt molestie vestibulum. Donec dictum suscipit nibh. Sed vel velit ante. Aenean quis viverra magna. Praesent eget cursus urna. Ut rhoncus interdum dolor non tincidunt. Sed vehicula consequat facilisis. Pellentesque pulvinar sem nisl, ac vestibulum erat rhoncus id. ",
-    thumbnails: {
-      w160: "http://placekitten.com/160/167",
-    },
-    filename: "http://placekitten.com/2039/1920",
-  },
-];
+const url =
+  "https://raw.githubusercontent.com/mattpe/wbma/master/docs/assets/test.json";
 
 const List = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [mediaArray, setMediaArray] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetch(url);
+        setMediaArray(await data.json());
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    setLoading(true);
+    // a synthetic delay
+    setTimeout(() => {
+      fetchData();
+    }, 2000);
+  }, []);
+
   return (
-    <FlatList
-      data={mediaArray}
-      renderItem={({ item }) => (
-        <ListItem
-          imageUrl={item.thumbnails.w160}
-          title={item.title}
-          text={item.description}
+    <View style={styles.container}>
+      {loading && (
+        <ActivityIndicator
+          style={styles.activityIndicator}
+          size="large"
+          color="#000000"
         />
       )}
-    />
+      <FlatList
+        data={mediaArray}
+        keyExtractor={(item) => item.title}
+        renderItem={({ item }) => (
+          <ListItem
+            imageUrl={item.thumbnails.w160}
+            title={item.title}
+            text={item.description}
+          />
+        )}
+      />
+      {error && (
+        <View style={styles.error}>
+          <Text style={styles.text}>Could not fetch data: {error}</Text>
+        </View>
+      )}
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  activityIndicator: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  container: {
+    position: "relative",
+  },
+  error: {
+    bottom: 32,
+    padding: 16,
+    paddingHorizontal: 24,
+    borderRadius: 24,
+    backgroundColor: "black",
+    marginHorizontal: 16,
+  },
+
+  text: {
+    color: "white",
+    textAlign: "center",
+  },
+});
 
 export default List;
