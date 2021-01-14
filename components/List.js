@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -6,37 +6,14 @@ import {
   Text,
   View,
 } from "react-native";
-import { fetchAllMedia, fetchMediaById } from "../api/media";
+import { useAllMedia } from "../hooks/ApiHooks";
 import ListItem from "./ListItem";
 
 const getImageUrl = (fileName) =>
   `http://media.mw.metropolia.fi/wbma/uploads/${fileName}`;
 
 const List = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [mediaArray, setMediaArray] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { files } = await fetchAllMedia();
-
-        const results = await Promise.all(
-          files.map(({ file_id: fileId }) => fetchMediaById(fileId))
-        );
-
-        setMediaArray(results);
-      } catch (e) {
-        setError(e.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    setLoading(true);
-    fetchData();
-  }, []);
+  const { data, error, loading } = useAllMedia();
 
   return (
     <View style={styles.container}>
@@ -48,7 +25,7 @@ const List = () => {
         />
       )}
       <FlatList
-        data={mediaArray}
+        data={data}
         keyExtractor={(item) => item.file_id.toString()}
         renderItem={({ item }) => (
           <ListItem
