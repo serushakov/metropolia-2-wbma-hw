@@ -6,10 +6,11 @@ import {
   Text,
   View,
 } from "react-native";
+import { fetchAllMedia, fetchMediaById } from "../api/media";
 import ListItem from "./ListItem";
 
-const url =
-  "https://raw.githubusercontent.com/mattpe/wbma/master/docs/assets/test.json";
+const getImageUrl = (fileName) =>
+  `http://media.mw.metropolia.fi/wbma/uploads/${fileName}`;
 
 const List = () => {
   const [loading, setLoading] = useState(false);
@@ -19,8 +20,13 @@ const List = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetch(url);
-        setMediaArray(await data.json());
+        const { files } = await fetchAllMedia();
+
+        const results = await Promise.all(
+          files.map(({ file_id: fileId }) => fetchMediaById(fileId))
+        );
+
+        setMediaArray(results);
       } catch (e) {
         setError(e.message);
       } finally {
@@ -29,10 +35,7 @@ const List = () => {
     };
 
     setLoading(true);
-    // a synthetic delay
-    setTimeout(() => {
-      fetchData();
-    }, 2000);
+    fetchData();
   }, []);
 
   return (
@@ -46,10 +49,10 @@ const List = () => {
       )}
       <FlatList
         data={mediaArray}
-        keyExtractor={(item) => item.title}
+        keyExtractor={(item) => item.file_id.toString()}
         renderItem={({ item }) => (
           <ListItem
-            imageUrl={item.thumbnails.w160}
+            imageUrl={getImageUrl(item.thumbnails.w160)}
             title={item.title}
             text={item.description}
           />
