@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 
 import { Image, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 
-const ListItem = ({ title, text, imageUrl }) => {
+const ListItem = ({ title, text, imageUrl, onPress }) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onPress}>
       <View style={styles.listItem}>
         <Image style={styles.itemImage} source={{ uri: imageUrl }} />
         <View style={styles.textContent}>
@@ -21,6 +21,7 @@ ListItem.propTypes = {
   title: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired,
+  onPress: PropTypes.func,
 };
 
 const styles = StyleSheet.create({

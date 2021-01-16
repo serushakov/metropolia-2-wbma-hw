@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   ActivityIndicator,
   FlatList,
@@ -12,7 +13,7 @@ import ListItem from "./ListItem";
 const getImageUrl = (fileName) =>
   `http://media.mw.metropolia.fi/wbma/uploads/${fileName}`;
 
-const List = () => {
+const List = ({ navigation }) => {
   const { data, error, loading } = useAllMedia();
 
   return (
@@ -32,6 +33,7 @@ const List = () => {
             imageUrl={getImageUrl(item.thumbnails.w160)}
             title={item.title}
             text={item.description}
+            onPress={() => navigation.navigate("Single")}
           />
         )}
       />
@@ -42,6 +44,10 @@ const List = () => {
       )}
     </View>
   );
+};
+
+List.propTypes = {
+  navigation: PropTypes.object,
 };
 
 const styles = StyleSheet.create({
