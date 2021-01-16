@@ -12,6 +12,8 @@ const useAllMedia = () => {
       try {
         const { files } = await fetchAllMedia();
 
+        files.length = 100;
+
         const results = await Promise.all(
           files.map(({ file_id: fileId }) => fetchMediaById(fileId))
         );
