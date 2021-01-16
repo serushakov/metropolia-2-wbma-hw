@@ -1,16 +1,17 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { StyleSheet, SafeAreaView, Text, Button } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import { AuthContext } from "../contexts/AuthContext";
 
 const Profile = ({ navigation }) => {
   const [isLoggedIn, setIsLoggedIn] = useContext(AuthContext);
 
-  const logout = () => {
+  const logout = async () => {
     setIsLoggedIn(false);
     if (!isLoggedIn) {
-      // this is to make sure isLoggedIn has changed, will be removed later
+      await AsyncStorage.removeItem("userToken");
       navigation.navigate("Login");
     }
   };
