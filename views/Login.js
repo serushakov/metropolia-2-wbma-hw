@@ -1,29 +1,25 @@
 import React, { useContext } from "react";
+import { StyleSheet, View, Text, Button } from "react-native";
 import PropTypes from "prop-types";
-import { StyleSheet, SafeAreaView, Text, Button } from "react-native";
-
 import { AuthContext } from "../contexts/AuthContext";
 
-const Profile = ({ navigation }) => {
+const Login = ({ navigation }) => {
   const [isLoggedIn, setIsLoggedIn] = useContext(AuthContext);
 
-  const logout = () => {
-    setIsLoggedIn(false);
-    if (!isLoggedIn) {
+  const handlePressLogin = () => {
+    setIsLoggedIn(true);
+    if (isLoggedIn) {
       // this is to make sure isLoggedIn has changed, will be removed later
-      navigation.navigate("Login");
+      navigation.navigate("Home");
     }
   };
-  return (
-    <SafeAreaView style={styles.container}>
-      <Text>Profile</Text>
-      <Button title={"Logout"} onPress={logout} />
-    </SafeAreaView>
-  );
-};
 
-Profile.propTypes = {
-  navigation: PropTypes.object,
+  return (
+    <View style={styles.container}>
+      <Text>Login</Text>
+      <Button title="Sign in!" onPress={handlePressLogin} />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -32,8 +28,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 40,
   },
 });
 
-export default Profile;
+Login.propTypes = {
+  navigation: PropTypes.object,
+};
+
+export default Login;
