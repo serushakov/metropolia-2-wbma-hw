@@ -8,6 +8,7 @@ import Profile from "../views/Profile";
 import Single from "../views/Single";
 import Login from "../views/Login";
 import { AuthContext } from "../contexts/AuthContext";
+import Register from "../views/Register";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -34,6 +35,7 @@ const StackScreen = () => {
       ) : (
         <>
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Register" component={Register} />
         </>
       )}
     </Stack.Navigator>
