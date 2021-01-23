@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, Text, KeyboardAvoidingView, Platform } from "react-native";
 import PropTypes from "prop-types";
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -27,12 +27,15 @@ const Login = ({ navigation }) => {
   }, [isLoggedIn]);
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <LoginForm />
       <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text style={styles.link}>Register</Text>
+        <Text style={styles.link}>I don't have an account</Text>
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -44,6 +47,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   link: {
+    marginTop: 16,
     color: "blue",
   },
 });

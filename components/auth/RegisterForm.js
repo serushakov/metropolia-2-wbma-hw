@@ -62,7 +62,7 @@ const RegisterForm = () => {
       />
       <Button
         disabled={!isValid}
-        title="Register!"
+        title="Register"
         onPress={handlePressRegister}
       />
     </View>
@@ -71,7 +71,6 @@ const RegisterForm = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     width: "60%",
