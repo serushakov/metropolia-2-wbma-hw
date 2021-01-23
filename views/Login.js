@@ -4,20 +4,28 @@ import PropTypes from "prop-types";
 import AsyncStorage from "@react-native-community/async-storage";
 
 import { AuthContext } from "../contexts/AuthContext";
+import { postLogin } from "../api/auth";
 
 const Login = ({ navigation }) => {
   const [isLoggedIn, setIsLoggedIn] = useContext(AuthContext);
 
-  const checkToken = async () => {
-    const userToken = await AsyncStorage.getItem("userToken");
-    if (userToken === "kek") {
+  const getToken = async () => {
+    let userToken = await AsyncStorage.getItem("userToken");
+
+    if (!userToken) {
+      const response = await postLogin("sushakov", "");
+
+      userToken = response.token;
+    }
+
+    if (userToken) {
       setIsLoggedIn(true);
       navigation.navigate("Home");
     }
   };
 
   useEffect(() => {
-    checkToken();
+    getToken();
   }, []);
 
   const handlePressLogin = async () => {
