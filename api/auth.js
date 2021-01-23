@@ -9,6 +9,9 @@ export async function postLogin(username, password) {
       username,
       password,
     }),
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 
   const content = await response.json();
