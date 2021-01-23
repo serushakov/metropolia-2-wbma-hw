@@ -14,7 +14,7 @@ export async function postLogin(username, password) {
     },
   });
 
-  return await response.json();
+  return response;
 }
 
 export async function postRegister({ username, password, email, fullName }) {
@@ -33,5 +33,5 @@ export async function postRegister({ username, password, email, fullName }) {
     },
   });
 
-  return await response.json();
+  return response;
 }

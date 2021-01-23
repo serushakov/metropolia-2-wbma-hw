@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage";
 import React, { useContext, useState } from "react";
-import { Button, StyleSheet, View } from "react-native";
+import { Button, StyleSheet, Text, View } from "react-native";
 import { postLogin } from "../../api/auth";
 import { AuthContext } from "../../contexts/AuthContext";
 import FormTextInput from "../FormTextInput";
@@ -10,6 +10,7 @@ const validate = ({ username, password }) =>
 
 const LoginForm = () => {
   const [, setIsLoggedIn] = useContext(AuthContext);
+  const [error, setError] = useState();
 
   const [fields, setFormState] = useState({
     username: "",
@@ -26,7 +27,15 @@ const LoginForm = () => {
   const isValid = validate(fields);
 
   const handlePressLogin = async () => {
-    const { token } = await postLogin(fields.username, fields.password);
+    setError(null);
+
+    const response = await postLogin(fields.username, fields.password);
+
+    const { token, message } = await response.json();
+
+    if (response.status !== 200) {
+      setError(message);
+    }
 
     if (token) {
       setIsLoggedIn(true);
@@ -48,6 +57,8 @@ const LoginForm = () => {
         secureTextEntry
         onChangeText={(text) => handleInputChange("password", text)}
       />
+      {error && <Text style={styles.error}>{error}</Text>}
+
       <Button onPress={handlePressLogin} disabled={!isValid} title="Login" />
     </View>
   );
@@ -58,6 +69,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "60%",
+  },
+  error: {
+    color: "red",
+    marginBottom: 8,
   },
 });
 

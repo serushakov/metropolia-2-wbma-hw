@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { Button, StyleSheet, View } from "react-native";
-import { postRegister } from "../../api/auth";
+import AsyncStorage from "@react-native-community/async-storage";
+import React, { useContext, useState } from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
+import { postLogin, postRegister } from "../../api/auth";
+import { AuthContext } from "../../contexts/AuthContext";
 import FormTextInput from "../FormTextInput";
 
 const validate = ({ username, password, email }) => {
@@ -12,6 +14,9 @@ const validate = ({ username, password, email }) => {
 };
 
 const RegisterForm = () => {
+  const [, setIsLoggedIn] = useContext(AuthContext);
+  const [error, setError] = useState();
+
   const [fields, setFormState] = useState({
     username: "",
     password: "",
@@ -28,8 +33,31 @@ const RegisterForm = () => {
 
   const isValid = validate(fields);
 
-  const handlePressRegister = () => {
-    postRegister(fields);
+  const handlePressRegister = async () => {
+    setError(null);
+    try {
+      const registerResponse = await postRegister(fields);
+      const registerContent = await registerResponse.json();
+
+      if (registerContent.error) {
+        throw Error(registerContent.error);
+      }
+
+      const loginResponse = await postLogin(fields.username, fields.password);
+
+      const { token, error } = await loginResponse.json();
+
+      if (loginResponse.status > 299) {
+        throw Error(error);
+      }
+
+      if (token) {
+        setIsLoggedIn(true);
+        await AsyncStorage.setItem("userToken", token);
+      }
+    } catch (e) {
+      setError(e.message);
+    }
   };
 
   return (
@@ -37,6 +65,7 @@ const RegisterForm = () => {
       <FormTextInput
         autoCapitalize="none"
         placeholder="Username"
+        autoCompleteType="off"
         value={fields.username}
         onChangeText={(txt) => handleInputChange("username", txt)}
       />
@@ -60,6 +89,7 @@ const RegisterForm = () => {
         value={fields.fullName}
         onChangeText={(txt) => handleInputChange("fullName", txt)}
       />
+      {error && <Text style={styles.error}>{error}</Text>}
       <Button
         disabled={!isValid}
         title="Register"
@@ -74,6 +104,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "60%",
+  },
+  error: {
+    color: "red",
+    marginBottom: 8,
   },
 });
 
