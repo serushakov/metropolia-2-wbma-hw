@@ -38,7 +38,7 @@ const useAllMedia = () => {
 };
 
 export const useHandleLogin = () => {
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { setIsLoggedIn, setUser } = useContext(AuthContext);
   const [error, setError] = useState();
 
   const doLogin = useCallback(
@@ -55,11 +55,12 @@ export const useHandleLogin = () => {
 
       if (token && user) {
         setIsLoggedIn(true);
+        setUser(user);
 
         await AsyncStorage.setItem("userToken", token);
       }
     },
-    [setIsLoggedIn]
+    [setIsLoggedIn, setUser]
   );
 
   return {
