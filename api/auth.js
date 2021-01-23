@@ -14,7 +14,24 @@ export async function postLogin(username, password) {
     },
   });
 
-  const content = await response.json();
+  return await response.json();
+}
 
-  return content;
+export async function postRegister({ username, password, email, fullName }) {
+  const url = apiUrl("/users");
+
+  const response = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify({
+      username,
+      password,
+      email,
+      full_name: fullName,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return await response.json();
 }
