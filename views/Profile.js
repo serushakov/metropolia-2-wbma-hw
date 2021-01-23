@@ -6,18 +6,23 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { AuthContext } from "../contexts/AuthContext";
 
 const Profile = ({ navigation }) => {
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { setIsLoggedIn, user, setUser } = useContext(AuthContext);
+
+  console.log(user);
 
   const logout = async () => {
     setIsLoggedIn(false);
+    setUser(null);
 
     await AsyncStorage.removeItem("userToken");
     navigation.navigate("Login");
   };
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Profile</Text>
-      <Button title={"Logout"} onPress={logout} />
+      <Text>{user?.full_name}</Text>
+      <Text>{user?.username}</Text>
+      <Text>{user?.email}</Text>
+      <Button title="Logout" onPress={logout} />
     </SafeAreaView>
   );
 };
