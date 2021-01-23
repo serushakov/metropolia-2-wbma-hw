@@ -1,16 +1,13 @@
-import AsyncStorage from "@react-native-community/async-storage";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
-import { postLogin } from "../../api/auth";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useHandleLogin } from "../../hooks/ApiHooks";
 import FormTextInput from "../FormTextInput";
 
 const validate = ({ username, password }) =>
   username.trim().length > 0 && password.trim().length > 0;
 
 const LoginForm = () => {
-  const [, setIsLoggedIn] = useContext(AuthContext);
-  const [error, setError] = useState();
+  const { error, doLogin } = useHandleLogin();
 
   const [fields, setFormState] = useState({
     username: "",
@@ -26,21 +23,8 @@ const LoginForm = () => {
 
   const isValid = validate(fields);
 
-  const handlePressLogin = async () => {
-    setError(null);
-
-    const response = await postLogin(fields.username, fields.password);
-
-    const { token, message } = await response.json();
-
-    if (response.status !== 200) {
-      setError(message);
-    }
-
-    if (token) {
-      setIsLoggedIn(true);
-      await AsyncStorage.setItem("userToken", token);
-    }
+  const handlePressLogin = () => {
+    doLogin(fields.username, fields.password);
   };
 
   return (

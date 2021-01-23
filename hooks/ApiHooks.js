@@ -1,6 +1,10 @@
-import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-community/async-storage";
+import { useCallback } from "react";
+import { useContext, useEffect, useState } from "react";
+import { postLogin } from "../api/auth";
 
 import { fetchAllMedia, fetchMediaById } from "../api/media";
+import { AuthContext } from "../contexts/AuthContext";
 
 const useAllMedia = () => {
   const [loading, setLoading] = useState(false);
@@ -31,6 +35,37 @@ const useAllMedia = () => {
   }, []);
 
   return { loading, error, data };
+};
+
+export const useHandleLogin = () => {
+  const { setIsLoggedIn } = useContext(AuthContext);
+  const [error, setError] = useState();
+
+  const doLogin = useCallback(
+    async (username, password) => {
+      setError(null);
+
+      const response = await postLogin(username, password);
+
+      const { token, user, message } = await response.json();
+
+      if (response.status !== 200) {
+        setError(message);
+      }
+
+      if (token && user) {
+        setIsLoggedIn(true);
+
+        await AsyncStorage.setItem("userToken", token);
+      }
+    },
+    [setIsLoggedIn]
+  );
+
+  return {
+    error,
+    doLogin,
+  };
 };
 
 export { useAllMedia };

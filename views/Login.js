@@ -8,7 +8,7 @@ import LoginForm from "../components/auth/LoginForm";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Login = ({ navigation }) => {
-  const [isLoggedIn, setIsLoggedIn] = useContext(AuthContext);
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
 
   const getToken = async () => {
     const userToken = await AsyncStorage.getItem("userToken");

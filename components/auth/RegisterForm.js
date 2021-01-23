@@ -1,8 +1,8 @@
-import AsyncStorage from "@react-native-community/async-storage";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
-import { postLogin, postRegister } from "../../api/auth";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useEffect } from "react/cjs/react.development";
+import { postRegister } from "../../api/auth";
+import { useHandleLogin } from "../../hooks/ApiHooks";
 import FormTextInput from "../FormTextInput";
 
 const validate = ({ username, password, email }) => {
@@ -14,8 +14,9 @@ const validate = ({ username, password, email }) => {
 };
 
 const RegisterForm = () => {
-  const [, setIsLoggedIn] = useContext(AuthContext);
   const [error, setError] = useState();
+
+  const { error: loginError, doLogin } = useHandleLogin();
 
   const [fields, setFormState] = useState({
     username: "",
@@ -31,33 +32,24 @@ const RegisterForm = () => {
     }));
   };
 
+  useEffect(() => {
+    setError(loginError);
+  }, [loginError]);
+
   const isValid = validate(fields);
 
   const handlePressRegister = async () => {
     setError(null);
-    try {
-      const registerResponse = await postRegister(fields);
-      const registerContent = await registerResponse.json();
 
-      if (registerContent.error) {
-        throw Error(registerContent.error);
-      }
+    const registerResponse = await postRegister(fields);
+    const registerContent = await registerResponse.json();
 
-      const loginResponse = await postLogin(fields.username, fields.password);
-
-      const { token, error } = await loginResponse.json();
-
-      if (loginResponse.status > 299) {
-        throw Error(error);
-      }
-
-      if (token) {
-        setIsLoggedIn(true);
-        await AsyncStorage.setItem("userToken", token);
-      }
-    } catch (e) {
-      setError(e.message);
+    if (registerContent.error) {
+      setError(registerContent.error);
+      return;
     }
+
+    doLogin(fields.username, fields.password);
   };
 
   return (

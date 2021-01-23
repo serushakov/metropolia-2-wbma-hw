@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { AuthContext } from "../contexts/AuthContext";
 
 const Profile = ({ navigation }) => {
-  const [isLoggedIn, setIsLoggedIn] = useContext(AuthContext);
+  const { setIsLoggedIn } = useContext(AuthContext);
 
   const logout = async () => {
     setIsLoggedIn(false);
