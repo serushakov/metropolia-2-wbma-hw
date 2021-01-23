@@ -10,10 +10,9 @@ const Profile = ({ navigation }) => {
 
   const logout = async () => {
     setIsLoggedIn(false);
-    if (!isLoggedIn) {
-      await AsyncStorage.removeItem("userToken");
-      navigation.navigate("Login");
-    }
+
+    await AsyncStorage.removeItem("userToken");
+    navigation.navigate("Login");
   };
   return (
     <SafeAreaView style={styles.container}>
