@@ -7,8 +7,8 @@ import {
   Text,
   View,
 } from "react-native";
-import { useAllMedia } from "../hooks/ApiHooks";
 import { Avatar, ListItem } from "react-native-elements";
+import { useAllMedia } from "../hooks/ApiHooks";
 
 const getImageUrl = (fileName) =>
   `http://media.mw.metropolia.fi/wbma/uploads/${fileName}`;
@@ -29,7 +29,10 @@ const List = ({ navigation }) => {
         data={data}
         keyExtractor={(item) => item.file_id.toString()}
         renderItem={({ item }) => (
-          <ListItem bottomDivider onPress={() => navigation.navigate("Single")}>
+          <ListItem
+            bottomDivider
+            onPress={() => navigation.navigate("Single", { item })}
+          >
             <Avatar
               size="large"
               source={{ uri: getImageUrl(item.thumbnails.w160) }}
