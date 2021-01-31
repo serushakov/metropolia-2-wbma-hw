@@ -15,6 +15,7 @@ This repository contains solutions to Web Based Mobile Development course in Met
 - [Exercise 5](https://github.com/serushakov/metropolia-2-wbma-hw/tree/exercise-5)
 - [Exercise 6](https://github.com/serushakov/metropolia-2-wbma-hw/tree/exercise-6)
 - [Exercise 7](https://github.com/serushakov/metropolia-2-wbma-hw/tree/exercise-7)
+- [Exercise 8](https://github.com/serushakov/metropolia-2-wbma-hw/tree/exercise-8)
 
 ### UX
 
