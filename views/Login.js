@@ -1,23 +1,34 @@
 import React, { useContext, useEffect } from "react";
-import { StyleSheet, Text, KeyboardAvoidingView, Platform } from "react-native";
+import { StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
 import PropTypes from "prop-types";
 import AsyncStorage from "@react-native-community/async-storage";
 
 import { AuthContext } from "../contexts/AuthContext";
 import LoginForm from "../components/auth/LoginForm";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button } from "react-native-elements";
+import { getCurrentUser } from "../api/auth";
 
 const Login = ({ navigation }) => {
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
-
-  const getToken = async () => {
-    const userToken = await AsyncStorage.getItem("userToken");
-
-    setIsLoggedIn(!!userToken);
-  };
+  const { isLoggedIn, setIsLoggedIn, setUser } = useContext(AuthContext);
 
   useEffect(() => {
+    const getToken = async () => {
+      const userToken = await AsyncStorage.getItem("userToken");
+
+      if (userToken) {
+        const response = await getCurrentUser(userToken);
+
+        if (response.status !== 200) {
+          return;
+        }
+
+        const user = await response.json();
+
+        setUser(user);
+        setIsLoggedIn(true);
+      }
+    };
+
     getToken();
   }, []);
 

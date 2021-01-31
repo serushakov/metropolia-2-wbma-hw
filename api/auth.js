@@ -35,3 +35,16 @@ export async function postRegister({ username, password, email, fullName }) {
 
   return response;
 }
+
+export async function getCurrentUser(token) {
+  const url = apiUrl("/users/user");
+
+  const response = await fetch(url, {
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": token,
+    },
+  });
+
+  return response;
+}
