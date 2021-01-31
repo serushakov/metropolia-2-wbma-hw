@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { Button, Input } from "react-native-elements";
 import { useHandleLogin } from "../../hooks/ApiHooks";
-import FormTextInput from "../FormTextInput";
 
 const validate = ({ username, password }) =>
   username.trim().length > 0 && password.trim().length > 0;
@@ -29,13 +29,14 @@ const LoginForm = () => {
 
   return (
     <View style={styles.container}>
-      <FormTextInput
+      <Input
         autoCapitalize="none"
         placeholder="Username"
         autoCompleteType="off"
         onChangeText={(text) => handleInputChange("username", text)}
       />
-      <FormTextInput
+
+      <Input
         autoCapitalize="none"
         placeholder="Password"
         secureTextEntry

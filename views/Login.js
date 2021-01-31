@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { AuthContext } from "../contexts/AuthContext";
 import LoginForm from "../components/auth/LoginForm";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { Button } from "react-native-elements";
 
 const Login = ({ navigation }) => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
@@ -32,9 +33,13 @@ const Login = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <LoginForm />
-      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text style={styles.link}>I don't have an account</Text>
-      </TouchableOpacity>
+      <Button
+        style={styles.noAccountButton}
+        titleStyle={styles.noAccountButtonText}
+        title="I don't have an account"
+        type="clear"
+        onPress={() => navigation.navigate("Register")}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -46,9 +51,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  link: {
-    marginTop: 16,
-    color: "blue",
+  noAccountButton: {
+    marginTop: 8,
+  },
+
+  noAccountButtonText: {
+    fontSize: 14,
   },
 });
 
