@@ -9,13 +9,28 @@ import Single from "../views/Single";
 import Login from "../views/Login";
 import { AuthContext } from "../contexts/AuthContext";
 import Register from "../views/Register";
+import Icon from "react-native-vector-icons/Feather";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const TabsScreen = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        // eslint-disable-next-line react/prop-types
+        tabBarIcon: ({ color, size }) => {
+          switch (route.name) {
+            case "Home":
+              return <Icon name="home" size={size} color={color} />;
+            case "Profile":
+              return <Icon name="user" size={size} color={color} />;
+            default:
+              return null;
+          }
+        },
+      })}
+    >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>

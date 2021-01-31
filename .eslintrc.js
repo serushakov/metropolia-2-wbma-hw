@@ -29,6 +29,7 @@ module.exports = {
     "no-console": 0,
     "require-jsdoc": 0,
     "prettier/prettier": "error",
+    "react/display-name": 0,
   },
   settings: {
     react: {
