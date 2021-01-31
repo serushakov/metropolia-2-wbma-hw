@@ -41,10 +41,17 @@ export async function getCurrentUser(token) {
 
   const response = await fetch(url, {
     headers: {
-      "Content-Type": "application/json",
       "x-access-token": token,
     },
   });
 
   return response;
+}
+
+export async function getUsernameExists(username) {
+  const url = apiUrl(`/users/username/${username}`);
+
+  const response = await fetch(url);
+
+  return await response.json();
 }
