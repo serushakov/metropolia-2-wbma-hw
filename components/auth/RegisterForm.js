@@ -8,14 +8,10 @@ import validate from "validate.js";
 import { postRegister } from "../../api/auth";
 import { useHandleLogin } from "../../hooks/ApiHooks";
 import useValidateUsername from "../../hooks/useValidateUsername";
-
-const mapFieldsForValidation = (fields) =>
-  Object.fromEntries(
-    Object.entries(fields).map(([key, field]) => [key, field.value])
-  );
+import { extractValuesFromFields } from "../../utils";
 
 const useValidateForm = (fields) => {
-  const errors = validate(mapFieldsForValidation(fields), {
+  const errors = validate(extractValuesFromFields(fields), {
     password: { length: { minimum: 5 } },
     confirmPassword: {
       equality: "password",
@@ -71,17 +67,23 @@ const RegisterForm = () => {
   }, [loginError]);
 
   const handlePressRegister = async () => {
-    setError(null);
+    try {
+      setError(null);
 
-    const registerResponse = await postRegister(fields);
-    const registerContent = await registerResponse.json();
+      const registerResponse = await postRegister(
+        extractValuesFromFields(fields)
+      );
 
-    if (registerContent.error) {
-      setError(registerContent.error);
-      return;
+      const registerContent = await registerResponse.json();
+      if (registerContent.error) {
+        setError(registerContent.error);
+        return;
+      }
+    } catch (error) {
+      setError(error.message);
     }
 
-    doLogin(fields.username, fields.password);
+    doLogin(fields.username.value, fields.password.value);
   };
 
   const canPressRegister = !errors && !usernameError && !isLoading;
@@ -95,7 +97,7 @@ const RegisterForm = () => {
         value={fields.username.value}
         onChangeText={(txt) => handleInputChange("username", txt)}
         onEndEditing={() => handleInputEndEditing("username")}
-        errorMessage={fields.username.touched && usernameError?.[0]}
+        errorMessage={fields.username.touched ? usernameError?.[0] : undefined}
         rightIcon={() => {
           if (isLoading) {
             return (
@@ -119,7 +121,9 @@ const RegisterForm = () => {
         value={fields.password.value}
         onChangeText={(txt) => handleInputChange("password", txt)}
         onEndEditing={() => handleInputEndEditing("password")}
-        errorMessage={fields.password.touched && errors?.password?.[0]}
+        errorMessage={
+          fields.password.touched ? errors?.password?.[0] : undefined
+        }
         secureTextEntry
       />
       <Input
@@ -129,7 +133,9 @@ const RegisterForm = () => {
         onChangeText={(txt) => handleInputChange("confirmPassword", txt)}
         onEndEditing={() => handleInputEndEditing("confirmPassword")}
         errorMessage={
-          fields.confirmPassword.touched && errors?.confirmPassword?.[0]
+          fields.confirmPassword.touched
+            ? errors?.confirmPassword?.[0]
+            : undefined
         }
         secureTextEntry
       />
@@ -140,7 +146,7 @@ const RegisterForm = () => {
         value={fields.email.value}
         onChangeText={(txt) => handleInputChange("email", txt)}
         onEndEditing={() => handleInputEndEditing("email")}
-        errorMessage={fields.email.touched && errors?.email?.[0]}
+        errorMessage={fields.email.touched ? errors?.email?.[0] : undefined}
       />
       <Input
         autoCapitalize="words"
@@ -148,7 +154,9 @@ const RegisterForm = () => {
         value={fields.fullName.value}
         onChangeText={(txt) => handleInputChange("fullName", txt)}
         onEndEditing={() => handleInputEndEditing("fullName")}
-        errorMessage={fields.fullName.touched && errors?.fullName?.[0]}
+        errorMessage={
+          fields.fullName.touched ? errors?.fullName?.[0] : undefined
+        }
       />
       {error && <Text style={styles.error}>{error}</Text>}
       <Button

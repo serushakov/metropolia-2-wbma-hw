@@ -25,8 +25,12 @@ const checkUsername = async (username) => {
 };
 
 const useValidateUsername = (username) => {
-  const { isLoading, data } = useQuery(["username", username], () =>
-    checkUsername(username)
+  const { isLoading, data } = useQuery(
+    ["username", username],
+    () => checkUsername(username),
+    {
+      staleTime: 1,
+    }
   );
 
   return { isLoading, error: data?.username };
