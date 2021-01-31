@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import { useAllMedia } from "../hooks/ApiHooks";
-import ListItem from "./ListItem";
+import { Avatar, ListItem } from "react-native-elements";
 
 const getImageUrl = (fileName) =>
   `http://media.mw.metropolia.fi/wbma/uploads/${fileName}`;
@@ -29,12 +29,20 @@ const List = ({ navigation }) => {
         data={data}
         keyExtractor={(item) => item.file_id.toString()}
         renderItem={({ item }) => (
-          <ListItem
-            imageUrl={getImageUrl(item.thumbnails.w160)}
-            title={item.title}
-            text={item.description}
-            onPress={() => navigation.navigate("Single")}
-          />
+          <ListItem bottomDivider onPress={() => navigation.navigate("Single")}>
+            <Avatar
+              size="large"
+              source={{ uri: getImageUrl(item.thumbnails.w160) }}
+            />
+
+            <ListItem.Content>
+              <ListItem.Title>{item.title}</ListItem.Title>
+              <ListItem.Subtitle numberOfLines="1">
+                {item.description}
+              </ListItem.Subtitle>
+            </ListItem.Content>
+            <ListItem.Chevron size={24} />
+          </ListItem>
         )}
       />
       {error && (
@@ -64,6 +72,7 @@ const styles = StyleSheet.create({
   },
   container: {
     position: "relative",
+    width: "100%",
   },
   error: {
     bottom: 32,
