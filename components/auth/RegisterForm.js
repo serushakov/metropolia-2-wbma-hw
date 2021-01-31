@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
-import { useEffect } from "react/cjs/react.development";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Button, Input } from "react-native-elements";
+
 import { postRegister } from "../../api/auth";
 import { useHandleLogin } from "../../hooks/ApiHooks";
-import FormTextInput from "../FormTextInput";
 
 const validate = ({ username, password, email }) => {
   return (
@@ -54,28 +54,28 @@ const RegisterForm = () => {
 
   return (
     <View style={styles.container}>
-      <FormTextInput
+      <Input
         autoCapitalize="none"
         placeholder="Username"
         autoCompleteType="off"
         value={fields.username}
         onChangeText={(txt) => handleInputChange("username", txt)}
       />
-      <FormTextInput
+      <Input
         autoCapitalize="none"
         placeholder="*********"
         value={fields.password}
         onChangeText={(txt) => handleInputChange("password", txt)}
         secureTextEntry
       />
-      <FormTextInput
+      <Input
         autoCapitalize="none"
         keyboardType="email-address"
         placeholder="Email"
         value={fields.email}
         onChangeText={(txt) => handleInputChange("email", txt)}
       />
-      <FormTextInput
+      <Input
         autoCapitalize="words"
         placeholder="Full name"
         value={fields.fullName}
