@@ -38,7 +38,7 @@ const List = ({ navigation }) => {
 
             <ListItem.Content>
               <ListItem.Title>{item.title}</ListItem.Title>
-              <ListItem.Subtitle numberOfLines="1">
+              <ListItem.Subtitle numberOfLines={1}>
                 {item.description}
               </ListItem.Subtitle>
             </ListItem.Content>
