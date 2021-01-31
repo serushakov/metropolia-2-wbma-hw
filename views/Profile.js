@@ -1,14 +1,27 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { StyleSheet, SafeAreaView, Text, Button } from "react-native";
+import { StyleSheet, SafeAreaView, Text, View } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
+import { Button, Card } from "react-native-elements";
 
 import { AuthContext } from "../contexts/AuthContext";
+import { getImageUrl } from "../utils";
+import { fetchMediaByTag } from "../api/media";
 
 const Profile = ({ navigation }) => {
   const { setIsLoggedIn, user, setUser } = useContext(AuthContext);
+  const [image, setImage] = useState(null);
 
-  console.log(user);
+  useEffect(() => {
+    if (!user) return;
+
+    fetchMediaByTag(`avatar_${user.user_id}`)
+      .then((response) => {
+        if (response.length === 0) throw Error("not found");
+        setImage(response[0].filename);
+      })
+      .catch(() => {});
+  }, [user]);
 
   const logout = async () => {
     setIsLoggedIn(false);
@@ -17,12 +30,24 @@ const Profile = ({ navigation }) => {
     await AsyncStorage.removeItem("userToken");
     navigation.navigate("Login");
   };
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text>{user?.full_name}</Text>
-      <Text>{user?.username}</Text>
-      <Text>{user?.email}</Text>
-      <Button title="Logout" onPress={logout} />
+      <Card containerStyle={styles.card}>
+        <Card.Title>{user?.full_name}</Card.Title>
+        {image && (
+          <Card.Image
+            style={styles.image}
+            source={{ uri: getImageUrl(image) }}
+          />
+        )}
+        <View style={styles.textContent}>
+          <Text>Username: {user?.username}</Text>
+          <Text>Email: {user?.email}</Text>
+        </View>
+
+        <Button title="Logout" onPress={logout} />
+      </Card>
     </SafeAreaView>
   );
 };
@@ -38,6 +63,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingTop: 40,
+  },
+  card: {
+    width: "90%",
+  },
+  image: {
+    height: 300,
+  },
+  textContent: {
+    marginVertical: 16,
   },
 });
 

@@ -2,9 +2,7 @@ import React from "react";
 import { StyleSheet, SafeAreaView, Text } from "react-native";
 import PropTypes from "prop-types";
 import { Card } from "react-native-elements";
-
-const getImageUrl = (fileName) =>
-  `http://media.mw.metropolia.fi/wbma/uploads/${fileName}`;
+import { getImageUrl } from "../utils";
 
 const Single = ({
   route: {

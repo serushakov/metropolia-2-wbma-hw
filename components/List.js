@@ -9,9 +9,7 @@ import {
 } from "react-native";
 import { Avatar, ListItem } from "react-native-elements";
 import { useAllMedia } from "../hooks/ApiHooks";
-
-const getImageUrl = (fileName) =>
-  `http://media.mw.metropolia.fi/wbma/uploads/${fileName}`;
+import { getImageUrl } from "../utils";
 
 const List = ({ navigation }) => {
   const { data, error, loading } = useAllMedia();
