@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
   container: {
     position: "relative",
     width: "100%",
+    flex: 1,
   },
   error: {
     bottom: 32,
