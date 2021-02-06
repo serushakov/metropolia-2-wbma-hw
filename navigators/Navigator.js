@@ -10,6 +10,7 @@ import Login from "../views/Login";
 import { AuthContext } from "../contexts/AuthContext";
 import Register from "../views/Register";
 import Icon from "react-native-vector-icons/Feather";
+import Upload from "../views/Upload";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -23,6 +24,8 @@ const TabsScreen = () => {
           switch (route.name) {
             case "Home":
               return <Icon name="home" size={size} color={color} />;
+            case "Upload":
+              return <Icon name="upload" size={size} color={color} />;
             case "Profile":
               return <Icon name="user" size={size} color={color} />;
             default:
@@ -32,6 +35,7 @@ const TabsScreen = () => {
       })}
     >
       <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Upload" component={Upload} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
