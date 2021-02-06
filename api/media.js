@@ -1,3 +1,5 @@
+import axios from "axios";
+import { extractImageMimeType } from "../utils";
 import { apiUrl } from "./constants";
 
 export async function fetchAllMedia() {
@@ -26,4 +28,29 @@ export async function fetchMediaByTag(tag) {
   }
 
   return await response.json();
+}
+
+export async function postMedia(title, description, image, token) {
+  const url = apiUrl(`/media`);
+
+  const formData = new FormData();
+
+  const filename = image.uri.split("/").pop();
+
+  formData.append("title", title);
+  formData.append("description", description);
+  formData.append("file", {
+    uri: image.uri,
+    name: filename,
+    type: extractImageMimeType(filename),
+  });
+
+  console.log(formData);
+
+  return axios.post(url, formData, {
+    headers: {
+      "content-type": "multipart/form-data",
+      "x-access-token": token,
+    },
+  });
 }
