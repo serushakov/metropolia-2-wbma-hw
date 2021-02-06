@@ -41,7 +41,6 @@ const LoginForm = () => {
     doLogin(fields.username.value, fields.password.value);
   };
 
-  console.log(fields, errors);
   return (
     <View style={styles.container}>
       <Input

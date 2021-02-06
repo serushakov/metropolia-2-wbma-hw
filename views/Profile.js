@@ -9,7 +9,7 @@ import { getImageUrl } from "../utils";
 import { fetchMediaByTag } from "../api/media";
 
 const Profile = ({ navigation }) => {
-  const { setIsLoggedIn, user, setUser } = useContext(AuthContext);
+  const { user, setUser, setToken } = useContext(AuthContext);
   const [image, setImage] = useState(null);
 
   useEffect(() => {
@@ -24,8 +24,8 @@ const Profile = ({ navigation }) => {
   }, [user]);
 
   const logout = async () => {
-    setIsLoggedIn(false);
     setUser(null);
+    setToken(null);
 
     await AsyncStorage.removeItem("userToken");
     navigation.navigate("Login");

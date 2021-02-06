@@ -9,7 +9,7 @@ import { Button } from "react-native-elements";
 import { getCurrentUser } from "../api/auth";
 
 const Login = ({ navigation }) => {
-  const { isLoggedIn, setIsLoggedIn, setUser } = useContext(AuthContext);
+  const { isLoggedIn, setUser, setToken } = useContext(AuthContext);
 
   useEffect(() => {
     const getToken = async () => {
@@ -19,13 +19,15 @@ const Login = ({ navigation }) => {
         const response = await getCurrentUser(userToken);
 
         if (response.status !== 200) {
+          setUser(null);
+          setToken(null);
           return;
         }
 
         const user = await response.json();
 
         setUser(user);
-        setIsLoggedIn(true);
+        setToken(userToken);
       }
     };
 

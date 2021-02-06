@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 const AuthContext = React.createContext({});
@@ -6,9 +6,16 @@ const AuthContext = React.createContext({});
 const AuthProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
+  const [token, setToken] = useState();
+
+  useEffect(() => {
+    setIsLoggedIn(!!user);
+  }, [user]);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, user, setUser }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn, user, setUser, token, setToken }}
+    >
       {props.children}
     </AuthContext.Provider>
   );
