@@ -45,8 +45,6 @@ export async function postMedia(title, description, image, token) {
     type: extractImageMimeType(filename),
   });
 
-  console.log(formData);
-
   return axios.post(url, formData, {
     headers: {
       "content-type": "multipart/form-data",

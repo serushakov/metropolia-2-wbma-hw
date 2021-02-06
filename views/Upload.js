@@ -1,25 +1,34 @@
-import React, { useContext, useState } from "react";
-import { Platform } from "react-native";
-import { StyleSheet } from "react-native";
-import { KeyboardAvoidingView } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  StyleSheet,
+  KeyboardAvoidingView,
+  ActivityIndicator,
+  View,
+  ScrollView,
+  StatusBar,
+  Dimensions,
+} from "react-native";
 import { Button, Image, Input } from "react-native-elements";
+import validate from "validate.js";
+import PropTypes from "prop-types";
 import * as ImagePicker from "expo-image-picker";
+import { useHeaderHeight } from "@react-navigation/stack";
+
 import { AuthContext } from "../contexts/AuthContext";
 import { postMedia } from "../api/media";
-import validate from "validate.js";
-import { ActivityIndicator } from "react-native";
-import { View } from "react-native";
 
 const defaultFieldState = {
   touched: false,
   value: "",
 };
 
+const fieldsInitialState = {
+  title: defaultFieldState,
+  description: defaultFieldState,
+};
+
 const useFields = () => {
-  const [fields, setFields] = useState({
-    title: defaultFieldState,
-    description: defaultFieldState,
-  });
+  const [fields, setFields] = useState(fieldsInitialState);
 
   const handleFieldChange = (field, value) => {
     setFields((current) => ({
@@ -35,7 +44,10 @@ const useFields = () => {
     }));
   };
 
-  return { fields, handleFieldBlur, handleFieldChange };
+  const clear = () => {
+    setFields(fieldsInitialState);
+  };
+  return { fields, handleFieldBlur, handleFieldChange, clear };
 };
 
 const useImagePicker = () => {
@@ -54,7 +66,11 @@ const useImagePicker = () => {
     }
   };
 
-  return { image, pickImage };
+  const clear = () => {
+    setImage(null);
+  };
+
+  return { image, pickImage, clear };
 };
 
 const useUploadMedia = () => {
@@ -97,60 +113,85 @@ const validator = (title, description, image) =>
     }
   );
 
-const Upload = () => {
-  const { fields, handleFieldBlur, handleFieldChange } = useFields();
-  const { image, pickImage } = useImagePicker();
+const Upload = ({ navigation }) => {
+  const {
+    fields,
+    handleFieldBlur,
+    handleFieldChange,
+    clear: clearFields,
+  } = useFields();
+  const { image, pickImage, clear: clearImage } = useImagePicker();
 
-  const { uploadMedia, error, loading, data } = useUploadMedia();
+  const { uploadMedia, loading, data } = useUploadMedia();
 
-  console.log({ loading, data, error });
+  useEffect(() => {
+    if (!loading && data) {
+      clearFields();
+      clearImage();
+      navigation.navigate("Home");
+    }
+  }, [loading, data]);
 
   const errors = validator(fields.title.value, fields.description.value, image);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       {loading && (
         <View style={styles.activityIndicatorOverlay}>
           <ActivityIndicator size="large" color="white" />
         </View>
       )}
+      <ScrollView>
+        <KeyboardAvoidingView
+          behavior="position"
+          keyboardVerticalOffset={useHeaderHeight() + StatusBar.currentHeight}
+        >
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              width: Dimensions.get("screen").width,
+              padding: 16,
+            }}
+          >
+            <Image style={styles.image} source={{ uri: image?.uri }} />
+            <Button title="Pick an image" onPress={pickImage} />
 
-      <Image style={styles.image} source={{ uri: image?.uri }} />
-      <Button title="Pick an image" onPress={pickImage} />
+            <Input
+              label="Title"
+              onBlur={() => handleFieldBlur("title")}
+              onTextInput={(value) => handleFieldChange("title", value)}
+              value={fields.title.value}
+            />
+            <Input
+              label="Description"
+              multiline
+              onBlur={() => handleFieldBlur("description")}
+              onTextInput={(value) => handleFieldChange("description", value)}
+              value={fields.description.value}
+            />
 
-      <Input
-        label="Title"
-        onBlur={() => handleFieldBlur("title")}
-        onTextInput={(value) => handleFieldChange("title", value)}
-        value={fields.title.value}
-      />
-      <Input
-        label="Description"
-        multiline
-        onBlur={() => handleFieldBlur("description")}
-        onTextInput={(value) => handleFieldChange("description", value)}
-        value={fields.description.value}
-      />
-
-      <Button
-        disabled={!!errors}
-        title="Upload"
-        onPress={() =>
-          uploadMedia(fields.title.value, fields.description.value, image)
-        }
-      />
-    </KeyboardAvoidingView>
+            <Button
+              disabled={!!errors}
+              title="Upload"
+              onPress={() =>
+                uploadMedia(fields.title.value, fields.description.value, image)
+              }
+            />
+          </View>
+        </KeyboardAvoidingView>
+      </ScrollView>
+    </View>
   );
+};
+
+Upload.propTypes = {
+  navigation: PropTypes.object,
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    position: "relative",
   },
 
   image: {
