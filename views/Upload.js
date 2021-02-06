@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Platform } from "react-native";
 import { StyleSheet } from "react-native";
 import { KeyboardAvoidingView } from "react-native";
 import { Button, Image, Input } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
-import Constants from "expo-constants";
+import { AuthContext } from "../contexts/AuthContext";
+import { postMedia } from "../api/media";
+import validate from "validate.js";
+import { ActivityIndicator } from "react-native";
+import { View } from "react-native";
 
 const defaultFieldState = {
   touched: false,
@@ -46,23 +50,77 @@ const useImagePicker = () => {
     });
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImage(result);
     }
   };
 
   return { image, pickImage };
 };
 
+const useUploadMedia = () => {
+  const { token } = useContext(AuthContext);
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState();
+  const [data, setData] = useState();
+
+  const uploadMedia = async (title, description, image) => {
+    if (!token) return;
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await postMedia(title, description, image, token);
+      setData(response.data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      setError(error);
+    }
+  };
+
+  return { uploadMedia, error, loading, data };
+};
+
+const validator = (title, description, image) =>
+  validate(
+    { title, description, image },
+    {
+      title: {
+        presence: { allowEmpty: false },
+      },
+      description: {
+        presence: { allowEmpty: false },
+      },
+      image: {
+        presence: { allowEmpty: false },
+      },
+    }
+  );
+
 const Upload = () => {
   const { fields, handleFieldBlur, handleFieldChange } = useFields();
   const { image, pickImage } = useImagePicker();
+
+  const { uploadMedia, error, loading, data } = useUploadMedia();
+
+  console.log({ loading, data, error });
+
+  const errors = validator(fields.title.value, fields.description.value, image);
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <Image style={styles.image} source={{ uri: image }} />
+      {loading && (
+        <View style={styles.activityIndicatorOverlay}>
+          <ActivityIndicator size="large" color="white" />
+        </View>
+      )}
+
+      <Image style={styles.image} source={{ uri: image?.uri }} />
+      <Button title="Pick an image" onPress={pickImage} />
+
       <Input
         label="Title"
         onBlur={() => handleFieldBlur("title")}
@@ -76,22 +134,42 @@ const Upload = () => {
         onTextInput={(value) => handleFieldChange("description", value)}
         value={fields.description.value}
       />
-      <Button title="Pick an image" onPress={pickImage} />
+
+      <Button
+        disabled={!!errors}
+        title="Upload"
+        onPress={() =>
+          uploadMedia(fields.title.value, fields.description.value, image)
+        }
+      />
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
     flex: 1,
     alignItems: "center",
+    position: "relative",
   },
 
   image: {
     width: 200,
     height: 200,
     marginBottom: 8,
+  },
+
+  activityIndicatorOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(32, 33, 37, 0.4)",
   },
 });
 
