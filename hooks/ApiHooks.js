@@ -2,9 +2,9 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { useCallback } from "react";
 import { useContext, useEffect, useState } from "react";
 import { postLogin } from "../api/auth";
-
-import { fetchAllMedia, fetchMediaById } from "../api/media";
+import { fetchMediaById, fetchMediaByTag } from "../api/media";
 import { AuthContext } from "../contexts/AuthContext";
+import { appIdentifier } from "../utils";
 
 const useAllMedia = () => {
   const [loading, setLoading] = useState(false);
@@ -14,9 +14,7 @@ const useAllMedia = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { files } = await fetchAllMedia();
-
-        files.length = 100;
+        const files = await fetchMediaByTag(appIdentifier);
 
         const results = await Promise.all(
           files.map(({ file_id: fileId }) => fetchMediaById(fileId))
