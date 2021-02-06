@@ -27,7 +27,7 @@ export async function fetchMediaByTag(tag) {
     throw Error("not found");
   }
 
-  return await response.json();
+  return response.json();
 }
 
 export async function postMedia(title, description, image, token) {
@@ -51,4 +51,22 @@ export async function postMedia(title, description, image, token) {
       "x-access-token": token,
     },
   });
+}
+
+export async function postTagMedia(fileId, tag, token) {
+  const url = apiUrl(`/tags`);
+
+  return axios.post(
+    url,
+    {
+      file_id: fileId,
+      tag,
+    },
+    {
+      headers: {
+        "x-access-token": token,
+        "content-type": "application/json",
+      },
+    }
+  );
 }

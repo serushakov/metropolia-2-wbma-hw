@@ -15,7 +15,8 @@ import * as ImagePicker from "expo-image-picker";
 import { useHeaderHeight } from "@react-navigation/stack";
 
 import { AuthContext } from "../contexts/AuthContext";
-import { postMedia } from "../api/media";
+import { postMedia, postTagMedia } from "../api/media";
+import { appIdentifier } from "../utils";
 
 const defaultFieldState = {
   touched: false,
@@ -87,6 +88,9 @@ const useUploadMedia = () => {
     try {
       const response = await postMedia(title, description, image, token);
       setData(response.data);
+
+      await postTagMedia(response.data.file_id, appIdentifier, token);
+
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -159,15 +163,23 @@ const Upload = ({ navigation }) => {
 
             <Input
               label="Title"
-              onBlur={() => handleFieldBlur("title")}
-              onTextInput={(value) => handleFieldChange("title", value)}
+              onEndEditing={() => handleFieldBlur("title")}
+              onChangeText={(value) => handleFieldChange("title", value)}
               value={fields.title.value}
+              errorMessage={
+                fields.title.touched ? errors?.title?.[0] : undefined
+              }
             />
             <Input
               label="Description"
               multiline
-              onBlur={() => handleFieldBlur("description")}
-              onTextInput={(value) => handleFieldChange("description", value)}
+              onEndEditing={() => handleFieldBlur("description")}
+              onChangeText={(value) => handleFieldChange("description", value)}
+              errorMessage={
+                fields.description.touched
+                  ? errors?.description?.[0]
+                  : undefined
+              }
               value={fields.description.value}
             />
 
