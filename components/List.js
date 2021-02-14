@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Avatar, ListItem } from "react-native-elements";
 import { useAllMedia } from "../hooks/ApiHooks";
-import { getImageUrl } from "../utils";
+import { getFileUrl } from "../utils";
 
 const List = ({ navigation }) => {
   const { data, error, loading } = useAllMedia();
@@ -33,7 +33,7 @@ const List = ({ navigation }) => {
           >
             <Avatar
               size="large"
-              source={{ uri: getImageUrl(item.thumbnails.w160) }}
+              source={{ uri: getFileUrl(item.thumbnails.w160) }}
             />
 
             <ListItem.Content>
